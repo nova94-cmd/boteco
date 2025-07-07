@@ -1,11 +1,21 @@
 import os
+import sys
 import discord
 from discord.ext import commands
 
-# Configuração para evitar módulos problemáticos
+# Solução para o erro do audioop em Python 3.13
+try:
+    import audioop
+except ModuleNotFoundError:
+    # Cria um módulo falso para audioop
+    class FakeAudioop:
+        def __getattr__(self, name):
+            return None
+    sys.modules['audioop'] = FakeAudioop()
+
+# Configuração do bot
 intents = discord.Intents.default()
 intents.message_content = True
-intents.voice_states = False  # Desativa voz para evitar audioop
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -18,17 +28,17 @@ async def ola(ctx):
     await ctx.send(f'Olá, {ctx.author.mention}!')
 
 @bot.command()
-async def info(ctx):
-    await ctx.send('Sou um bot de teste!')
+async def ping(ctx):
+    await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
 
 @bot.command()
 async def dado(ctx):
     import random
-    await ctx.send(f'{ctx.author.mention} rolou um dado: **{random.randint(1,6)}**')
+    await ctx.send(f'Dado: {random.randint(1, 6)}')
 
-if __name__ == '__main__':
-    token = os.getenv('DISCORD_TOKEN')
-    if token:
-        bot.run(token)
-    else:
-        print("Token não encontrado. Verifique a variável de ambiente DISCORD_TOKEN.")
+# Inicialização
+TOKEN = os.getenv('DISCORD_TOKEN')
+if TOKEN:
+    bot.run(TOKEN)
+else:
+    print("Token não encontrado!")
