@@ -1,25 +1,23 @@
-# bot.py
 import discord
-import os
+   import os
+   from discord.ext import commands
 
-intents = discord.Intents.default()
-intents.message_content = True
+   intents = discord.Intents.default()
+   intents.message_content = True
 
-client = discord.Client(intents=intents)
+   bot = commands.Bot(command_prefix='!', intents=intents)
 
-@client.event
-async def on_ready():
-    print(f'Bot conectado como {client.user}')
+   @bot.event
+   async def on_ready():
+       print(f'Bot {bot.user.name} online!')
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+   @bot.command()
+   async def ola(ctx):
+       await ctx.send(f'Olá, {ctx.author.mention}!')
 
-    if message.content.startswith('!ola'):
-        await message.channel.send(f'Olá, {message.author.mention}!')
-    
-    if message.content.startswith('!info'):
-        await message.channel.send('Sou um bot de testes!')
+   @bot.command()
+   async def info(ctx):
+       await ctx.send('Bot de teste sem voz!')
 
-client.run(os.getenv('DISCORD_TOKEN'))
+   TOKEN = os.getenv('DISCORD_TOKEN')
+   bot.run(TOKEN)
