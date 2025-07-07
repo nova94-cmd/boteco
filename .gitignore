@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.venv/
+
+# Variáveis de ambiente
+.env
+
+# Configurações do editor
+.vscode/
+.idea/
